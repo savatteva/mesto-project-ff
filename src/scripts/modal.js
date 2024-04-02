@@ -1,26 +1,27 @@
-const popupCard = document.querySelector('.popup_type_image');
+import { popupCard } from "./forms.js";
 
-export function openModal(popupType) {
+const popupImage = document.querySelector('.popup__image');
+const popupCaption = document.querySelector('.popup__caption');
+
+function openModal(popupType) {
   popupType.classList.add('popup_is-opened');
-}
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeModal(popupType)
+    }
+  })
+};
 
-export function closeModal(popupType) {
+function closeModal(popupType) {
   popupType.classList.remove('popup_is-opened');
-}
+};
 
-export function handlePopupOpening(name, link) {
+function handlePopupOpening(card) {
   openModal(popupCard);
 
-  const popupImage = document.querySelector('.popup__image');
-  const popupCaption = document.querySelector('.popup__caption');
-  const popup = document.querySelector('.popup_type_image');
-  const closeBtn = popup.querySelector('.popup__close');
+  popupImage.src = card.link;
+  popupCaption.textContent = card.name;
+  popupImage.alt = card.name;
+};
 
-  popupImage.src = link;
-  popupCaption.textContent = name;
-  popupImage.alt = name;
-
-  closeBtn.addEventListener('click', () => {
-    closeModal(popupCard);
-  })
-}
+export { openModal, closeModal, handlePopupOpening }

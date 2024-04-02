@@ -1,16 +1,8 @@
-import { openModal } from "./modal";
+const container = document.querySelector('.content');
+const cardContainer = container.querySelector('.places__list');
+const cardTemplate = document.querySelector('#card-template').content;
 
-export function likeCard(e) {
-  if (e.target.classList.contains('card__like-button')) {
-    e.target.classList.toggle('card__like-button_is-active')
-  } 
-}
-
-export const container = document.querySelector('.content');
-export const cardContainer = container.querySelector('.places__list');
-export const cardTemplate = document.querySelector('#card-template').content;
-
-export function createCard(card, deleteCard, likeCard, handlePopupOpening) {
+function createCard(card, deleteCard, likeCard, handlePopupOpening) {
   const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
   const deleteBtn = cardElement.querySelector('.card__delete-button');
   const likeBtn = cardElement.querySelector('.card__like-button');
@@ -24,21 +16,29 @@ export function createCard(card, deleteCard, likeCard, handlePopupOpening) {
 
   likeBtn.addEventListener('click', (e) => likeCard(e));
 
-  imagePlace.addEventListener('click', () => handlePopupOpening(card.name, card.link));
+  imagePlace.addEventListener('click', () => handlePopupOpening(card));
 
   return cardElement;
-}
+};
 
-export function deleteCard(card) {
+function deleteCard(card) {
   card.remove();
-}
+};
 
-export function renderCards(cardElement, deleteCard, likeCard, handlePopupOpening) {
+function likeCard(e) {
+  if (e.target.classList.contains('card__like-button')) {
+    e.target.classList.toggle('card__like-button_is-active')
+  } 
+};
+
+function renderCards(cardElement, deleteCard, likeCard, handlePopupOpening) {
   const card = createCard(cardElement, deleteCard, likeCard,handlePopupOpening);
 
   cardContainer.append(card);
-}
+};
 
-export function addCardInContainer(element) {
+function addCardInContainer(element) {
   cardContainer.prepend(element)
-}
+};
+
+export { container, cardContainer, cardTemplate, createCard, likeCard, deleteCard, renderCards, addCardInContainer }
