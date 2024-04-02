@@ -1,9 +1,14 @@
 import { addCardInContainer, createCard, likeCard, deleteCard  } from "./card.js";
-import { closeModal, openModal } from "./modal.js";
+import { closeModal, handlePopupOpening } from "./modal.js";
 
 const popupEditProfile = document.querySelector('.popup_type_edit');const popupAddCard = document.querySelector('.popup_type_new-card');
 const popupCard = document.querySelector('.popup_type_image');
 const formEditProfile = document.forms.editProfile;
+const formNewPlace = document.forms.newPlace;
+const name = formEditProfile.elements.name;
+const description = formEditProfile.elements.description;
+const profileTitle = document.querySelector('.profile__title');
+const profileDescription = document.querySelector('.profile__description');
 
 function eventListener(popup) {
   popup.addEventListener('click', (e) => {
@@ -13,17 +18,10 @@ function eventListener(popup) {
   })
 };
 
-const name = formEditProfile.elements.name;
-const description = formEditProfile.elements.description;
-const profileTitle = document.querySelector('.profile__title');
-const profileDescription = document.querySelector('.profile__description');
-
-name.value = profileTitle.textContent;
-description.value = profileDescription.textContent;
-
-eventListener(popupEditProfile);
-eventListener(popupAddCard);
-eventListener(popupCard);
+function fillingProfilePopup() {
+  name.value = profileTitle.textContent;
+  description.value = profileDescription.textContent;
+}
 
 function handleEditProfileFormSubmit(e) {
   e.preventDefault();
@@ -34,8 +32,6 @@ function handleEditProfileFormSubmit(e) {
   closeModal(popupEditProfile);
 }
 
-const formNewPlace = document.forms.newPlace;
-
 function handleNewPlaceFormSubmit(e) {
   e.preventDefault();
 
@@ -44,7 +40,7 @@ function handleNewPlaceFormSubmit(e) {
   newPlace.name = formNewPlace.elements.placeName.value;
   newPlace.link = formNewPlace.elements.link.value;
 
-  addCardInContainer(createCard(newPlace, deleteCard, likeCard, openModal));
+  addCardInContainer(createCard(newPlace, deleteCard, likeCard, handlePopupOpening));
 
   closeModal(popupAddCard);
 
@@ -56,5 +52,11 @@ function handleNewPlaceFormSubmit(e) {
 function resetForm(form) {
   form.reset();
 }
+
+fillingProfilePopup();
+
+eventListener(popupEditProfile);
+eventListener(popupAddCard);
+eventListener(popupCard);
 
 export { popupEditProfile, popupAddCard, popupCard, formEditProfile, formNewPlace, handleEditProfileFormSubmit, handleNewPlaceFormSubmit }

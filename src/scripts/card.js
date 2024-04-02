@@ -41,4 +41,4 @@ function addCardInContainer(element) {
   cardContainer.prepend(element)
 };
 
-export { container, cardContainer, cardTemplate, createCard, likeCard, deleteCard, renderCards, addCardInContainer }
+export { container, cardContainer, cardTemplate, createCard, likeCard, deleteCard, renderCards, addCardInContainer };

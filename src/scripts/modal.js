@@ -24,4 +24,4 @@ function handlePopupOpening(card) {
   popupImage.alt = card.name;
 };
 
-export { openModal, closeModal, handlePopupOpening }
+export { openModal, closeModal, handlePopupOpening };
