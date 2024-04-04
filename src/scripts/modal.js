@@ -1,10 +1,4 @@
-import { popupEditProfile, fillProfilePopup } from './forms.js'
-
 function openModal(popupType) {
-  if (popupType === popupEditProfile) {
-    fillProfilePopup();
-  }
-
   popupType.classList.add('popup_is-opened');
 
   hangKeyListener();

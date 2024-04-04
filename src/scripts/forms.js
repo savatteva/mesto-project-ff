@@ -1,6 +1,6 @@
-import { addCardInContainer, createCard, likeCard, deleteCard  } from "./card.js";
-import { closeModal } from "./modal.js";
-import { handleImagePopupOpening } from './index.js'
+import { addCardInContainer, createCard, likeCard, deleteCard  } from './card.js';
+import { closeModal } from './modal.js';
+import { handleImagePopupOpening } from './index.js';
 
 const popupEditProfile = document.querySelector('.popup_type_edit');
 const popupAddCard = document.querySelector('.popup_type_new-card');
@@ -23,7 +23,7 @@ function addClosePopupByOverlayEventListener(popup) {
 function fillProfilePopup() {
   name.value = profileTitle.textContent;
   description.value = profileDescription.textContent;
-}
+};
 
 function handleEditProfileFormSubmit(e) {
   e.preventDefault();
@@ -32,7 +32,7 @@ function handleEditProfileFormSubmit(e) {
   profileDescription.textContent = description.value;
 
   closeModal(popupEditProfile);
-}
+};
 
 function handleNewPlaceFormSubmit(e) {
   e.preventDefault();
@@ -53,10 +53,10 @@ function handleNewPlaceFormSubmit(e) {
 
 function resetForm(form) {
   form.reset();
-}
+};
 
 addClosePopupByOverlayEventListener(popupEditProfile);
 addClosePopupByOverlayEventListener(popupAddCard);
 addClosePopupByOverlayEventListener(popupCard);
 
-export { popupEditProfile, popupAddCard, popupCard, formEditProfile, formNewPlace, fillProfilePopup, handleEditProfileFormSubmit, handleNewPlaceFormSubmit }
+export { popupEditProfile, popupAddCard, popupCard, formEditProfile, formNewPlace, fillProfilePopup, handleEditProfileFormSubmit, handleNewPlaceFormSubmit };

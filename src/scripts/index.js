@@ -2,7 +2,7 @@ import '../pages/index.css';
 import { initialCards } from './cards.js';
 import { likeCard, deleteCard, renderCards} from './card.js';
 import { openModal } from './modal.js';
-import { formEditProfile, formNewPlace, handleEditProfileFormSubmit, handleNewPlaceFormSubmit, popupEditProfile, popupAddCard, popupCard } from './forms.js';
+import { formEditProfile, formNewPlace, handleEditProfileFormSubmit, handleNewPlaceFormSubmit, popupEditProfile, popupAddCard, popupCard, fillProfilePopup } from './forms.js';
 
 const editBtn = document.querySelector('.profile__edit-button');
 const addBtn = document.querySelector('.profile__add-button');
@@ -22,8 +22,8 @@ function handleImagePopupOpening(card) {
 };
 
 function hangEventListenerOpenPopup(btn, popup) {
-  btn.addEventListener('click', () => openModal(popup));
-}
+ btn.addEventListener('click', () => openModal(popup));
+};
 
 function hangEventListenerForm(form, handleFunction) {
   form.addEventListener('submit', handleFunction)
@@ -37,7 +37,11 @@ function setYear() {
 
 renderCardsfromDatabase();
 
-hangEventListenerOpenPopup(editBtn, popupEditProfile);
+editBtn.addEventListener('click', () => {
+  fillProfilePopup();
+  openModal(popupEditProfile)
+})
+
 hangEventListenerOpenPopup(addBtn, popupAddCard);
 
 hangEventListenerForm(formEditProfile, handleEditProfileFormSubmit);
@@ -45,4 +49,4 @@ hangEventListenerForm(formNewPlace, handleNewPlaceFormSubmit);
 
 setYear();
 
-export { handleImagePopupOpening }
+export { handleImagePopupOpening };
