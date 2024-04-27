@@ -1,16 +1,26 @@
 import '../pages/index.css';
-import { initialCards } from './cards.js';
 import { likeCard, deleteCard, renderCards} from './card.js';
-import { openModal } from './modal.js';
-import { formEditProfile, formNewPlace, handleEditProfileFormSubmit, handleNewPlaceFormSubmit, popupEditProfile, popupAddCard, popupCard, fillProfilePopup } from './forms.js';
+import { closeModal, openModal } from './modal.js';
+import { formEditProfile, formNewPlace, handleEditProfileFormSubmit, handleNewPlaceFormSubmit, popupEditProfile, popupAddCard, popupCard, fillProfilePopup, fillProfile, handleChangeAvatarFormSubmit, changeAvatarForm } from './forms.js';
+import { validationConfig, enableValidation, clearValidation } from './validation.js';
+import { getUserInfo, getInitialCards } from './api';
 
 const editBtn = document.querySelector('.profile__edit-button');
 const addBtn = document.querySelector('.profile__add-button');
 const popupImage = document.querySelector('.popup__image');
 const popupCaption = document.querySelector('.popup__caption');
+const avatar = document.querySelector('.profile__image');
+const changeAvatarPopup = document.querySelector('.popup_type_change-avatar');
 
-function renderCardsfromDatabase() {
-  initialCards.forEach(el => renderCards(el, deleteCard, likeCard, handleImagePopupOpening));
+Promise.all([getInitialCards(), getUserInfo()])
+  .then(([cards, userInfo]) => {
+    setAvatar(userInfo.avatar)
+    fillProfile(userInfo.name, userInfo.about)
+    cards.forEach(card => renderCards(card, deleteCard, likeCard, handleImagePopupOpening, userInfo));
+  });
+
+function setAvatar(avatarUrl) {
+  avatar.style.backgroundImage = `url(${avatarUrl})`
 }
 
 function handleImagePopupOpening(card) {
@@ -21,9 +31,15 @@ function handleImagePopupOpening(card) {
   popupImage.alt = card.name;
 };
 
-function hangEventListenerOpenPopup(btn, popup) {
- btn.addEventListener('click', () => openModal(popup));
-};
+addBtn.addEventListener('click', () => {
+  clearValidation(formNewPlace, validationConfig);
+  openModal(popupAddCard);
+});
+
+avatar.addEventListener('click', () =>{
+  clearValidation(changeAvatarForm, validationConfig)
+  openModal(changeAvatarPopup)
+})
 
 function hangEventListenerForm(form, handleFunction) {
   form.addEventListener('submit', handleFunction)
@@ -35,18 +51,17 @@ function setYear() {
   yearElement.textContent = '© ' + `${year}` + ' Mesto Russia';
 }
 
-renderCardsfromDatabase();
-
 editBtn.addEventListener('click', () => {
   fillProfilePopup();
-  openModal(popupEditProfile)
+  openModal(popupEditProfile);
 })
-
-hangEventListenerOpenPopup(addBtn, popupAddCard);
 
 hangEventListenerForm(formEditProfile, handleEditProfileFormSubmit);
 hangEventListenerForm(formNewPlace, handleNewPlaceFormSubmit);
+hangEventListenerForm(changeAvatarForm, handleChangeAvatarFormSubmit);
 
 setYear();
 
-export { handleImagePopupOpening };
+enableValidation(validationConfig);
+
+export { handleImagePopupOpening, changeAvatarPopup, avatar, setAvatar };
