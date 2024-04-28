@@ -1,10 +1,12 @@
-import { likeCardUsingApi, deleteCardUsingApi, unlikeCardUsingApi } from './api.js'
+import { submitLikedCard, submitDeletedCard, unlikeCard } from './api.js'
 import { closeModal, openModal } from './modal.js';
-import { deleteCardBtn, popupDeleteCard } from './forms'
+import { renderLoading } from './utils';
 
 const container = document.querySelector('.content');
 const cardContainer = container.querySelector('.places__list');
 const cardTemplate = document.querySelector('#card-template').content;
+const popupDeleteCard = document.querySelector('.popup_type_delete-card');
+const deleteCardBtn = popupDeleteCard.querySelector('.popup__button');
 
 function createCard(card, deleteCard, likeCard, handlePopupOpening, userInfo) {
   const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
@@ -15,10 +17,14 @@ function createCard(card, deleteCard, likeCard, handlePopupOpening, userInfo) {
   const cardTitle = cardElement.querySelector('.card__title');
 
   card.likes.forEach(like => {
-    if (like._id === userInfo._id) {
+    if (like._id === card.owner._id) {
       likeBtn.classList.add('card__like-button_is-active')
     }
   })
+  
+  if (userInfo._id !== card.owner._id) {
+    deleteBtn.remove();
+  }
 
   cardTitle.textContent = card.name;
   imagePlace.alt  = card.name;
@@ -28,7 +34,7 @@ function createCard(card, deleteCard, likeCard, handlePopupOpening, userInfo) {
 
   deleteBtn.addEventListener('click', () => {
     openModal(popupDeleteCard);
-    deleteCardUsingModal(cardElement, deleteCard, closeModal);
+    deleteCardUsingModal(cardElement, deleteCard);
   });
 
   likeBtn.addEventListener('click', (e) => likeCard(e, cardElement));
@@ -38,48 +44,42 @@ function createCard(card, deleteCard, likeCard, handlePopupOpening, userInfo) {
   return cardElement;
 };
 
-function deleteCardUsingModal(cardElement, deleteCard, closeModal) {
+function deleteCardUsingModal(cardElement, deleteCard) {
   deleteCardBtn.addEventListener('click', () => {
-    deleteCard(cardElement);
-    closeModal(popupDeleteCard);
+    deleteCard(cardElement, popupDeleteCard);
   })
 }
 
-function deleteCard(card) {
+function deleteCard(card, form) {
   card.remove();
-  deleteCardUsingApi(card.id)
+  submitDeletedCard(card.id, form)
+    .then(closeModal(popupDeleteCard))
+    .catch((err) => {
+      console.log(err);
+    })
+    .finally(() => renderLoading(false, form.querySelector('.popup__button')))
 };
 
 function likeCard(e, cardElement) {
   if (e.target.classList.contains('card__like-button_is-active') && e.target.classList.contains('card__like-button')) {
     e.target.classList.toggle('card__like-button_is-active')
-    unlikeCardUsingApi(cardElement.id)
+    unlikeCard(cardElement.id)
       .then(res => {
         cardElement.querySelector('.like-button__quantity').textContent = res.likes.length
       })
+      .catch((err) => {
+        console.log(err); 
+      });
     } else if (e.target.classList.contains('card__like-button')) {
         e.target.classList.toggle('card__like-button_is-active')
-        likeCardUsingApi(cardElement.id)
+        submitLikedCard(cardElement.id)
           .then(res => {
             cardElement.querySelector('.like-button__quantity').textContent = res.likes.length
           })
+          .catch((err) => {
+            console.log(err);
+          });
     }
 };
 
-function renderCards(cardElement, deleteCard, likeCard, handlePopupOpening, userInfo) {
-  const card = createCard(cardElement, deleteCard, likeCard,handlePopupOpening, userInfo);
-
-  const deleteBtn = card.querySelector('.card__delete-button');
-
-  if (userInfo._id !== cardElement.owner._id) {
-    deleteBtn.remove();
-  }
-
-  cardContainer.append(card);
-};
-
-function addCardInContainer(element) {
-  cardContainer.prepend(element)
-};
-
-export { container, cardContainer, cardTemplate, createCard, likeCard, deleteCard, renderCards, addCardInContainer };
+export { container, cardContainer, cardTemplate, createCard, likeCard, deleteCard, popupDeleteCard };

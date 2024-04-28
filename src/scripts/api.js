@@ -1,4 +1,5 @@
-import { renderLoading, formNewPlace, formEditProfile, changeAvatarForm } from './forms.js'
+import { renderLoading } from './utils';
+import {  formEditProfile } from './index'
 
 const config = {
   baseUrl: 'https://nomoreparties.co/v1/wff-cohort-12',
@@ -8,41 +9,30 @@ const config = {
   }
 }
 
+function checkStatus(res) {
+  if (res.ok) {
+    return res.json();
+  }
+  
+  return Promise.reject(`Ошибка: ${res.status}`);
+}
+
 const getUserInfo = async () => {
   return fetch(`${config.baseUrl}/users/me`, {
     headers: config.headers, 
   })
-    .then(res => {
-      if (res.ok) {
-        return res.json();
-      }
-      
-      return Promise.reject(`Ошибка: ${res.status}`);
-    })
-  
-    .catch((err) => {
-      console.log(err); 
-    })
+    .then(checkStatus)
 }
 
 const getInitialCards = async () => {
   return fetch(`${config.baseUrl}/cards`, {
     headers: config.headers
   })
-    .then(res => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Ошибка: ${res.status}`);
-    })
-
-    .catch((err) => {
-      console.log(err); 
-    })
+    .then(checkStatus)
 }
 
-const addNewCardUsingApi = async (name, link, likes) => {
-  renderLoading(true, formNewPlace.querySelector('.popup__button'));
+const addCard = async (name, link, likes, form) => {
+  renderLoading(true, form.querySelector('.popup__button'));
 
   return fetch(`${config.baseUrl}/cards`, {
     method: 'POST',
@@ -53,79 +43,36 @@ const addNewCardUsingApi = async (name, link, likes) => {
       likes: likes
     })
   })
-    .then(res => {
-      if (res.ok) {
-        return res.json();
-      }
-      
-      return Promise.reject(`Ошибка: ${res.status}`);
-    })
-
-    .catch((err) => {
-      console.log(err); 
-    })
-
-    .finally(() => renderLoading(false, formNewPlace.querySelector('.popup__button')))
+    .then(checkStatus)
 }
 
-const deleteCardUsingApi = async (id) => {
+const submitDeletedCard = async (id, form) => {
+  renderLoading(true, form.querySelector('.popup__button'));
   return fetch(`${config.baseUrl}/cards/${id}`, {
     method: 'DELETE',
     headers: config.headers, 
   })
-    .then(res => {
-      if (res.ok) {
-        return res.json();
-      }
-      
-      return Promise.reject(`Ошибка: ${res.status}`);
-    })
-
-    .catch((err) => {
-      console.log(err); 
-    })
-
-    .finally(() => renderLoading(false, formNewPlace.querySelector('.popup__button')))
+    .then(checkStatus)
 }
 
-const likeCardUsingApi = async (id) => {
+const submitLikedCard = async (id) => {
   return fetch(`${config.baseUrl}/cards/likes/${id}`, {
     method: 'PUT',
     headers: config.headers, 
   })
-    .then(res => {
-      if (res.ok) {
-        return res.json();
-      }
-      
-      return Promise.reject(`Ошибка: ${res.status}`);
-    })
-
-    .catch((err) => {
-      console.log(err); 
-    })
+    .then(checkStatus)
 }
 
-const unlikeCardUsingApi = async (id) => {
+const unlikeCard = async (id) => {
   return fetch(`${config.baseUrl}/cards/likes/${id}`, {
     method: 'DELETE',
     headers: config.headers, 
   })
-    .then(res => {
-      if (res.ok) {
-        return res.json();
-      }
-      
-      return Promise.reject(`Ошибка: ${res.status}`);
-    })
-
-    .catch((err) => {
-      console.log(err); 
-    })
+    .then(checkStatus)
 }
 
-const editProfile = async (name, about) => {
-  renderLoading(true, formEditProfile.querySelector('.popup__button'));
+const editProfile = async (name, about, form) => {
+  renderLoading(true, form.querySelector('.popup__button'));
 
   return fetch(`${config.baseUrl}/users/me`, {
     method: 'PATCH',
@@ -135,23 +82,11 @@ const editProfile = async (name, about) => {
       about: about,
     })
   })
-    .then(res => {
-      if (res.ok) {
-        return res.json();
-      }
-      
-      return Promise.reject(`Ошибка: ${res.status}`);
-    })
-
-    .catch((err) => {
-      console.log(err); 
-    })
-
-    .finally(() => renderLoading(false, formEditProfile.querySelector('.popup__button')))
+    .then(checkStatus)
 }
 
-const changeAvatarUsingApi = async (avatar) => {
-  renderLoading(true, changeAvatarForm.querySelector('.popup__button'))
+const changeAvatar = async (avatar, form) => {
+  renderLoading(true, form.querySelector('.popup__button'))
 
   return fetch(`${config.baseUrl}/users/me/avatar`, {
     method: 'PATCH',
@@ -160,23 +95,8 @@ const changeAvatarUsingApi = async (avatar) => {
       avatar: avatar
     })
   })
-    .then(res => {
-      if (res.ok) {
-        return res.json();
-      }
-      
-      return Promise.reject(`Ошибка: ${res.status}`);
-    })
 
-    .catch((err) => {
-      console.log(err); 
-    })
-
-    .finally(() => renderLoading(false, changeAvatarForm.querySelector('.popup__button')))
+    .then(checkStatus)
 }
 
-const renderApiLoading = async () => {
-  
-}
-
-export { config, getUserInfo, getInitialCards, deleteCardUsingApi, likeCardUsingApi, unlikeCardUsingApi, addNewCardUsingApi, editProfile, changeAvatarUsingApi }
+export { config, getUserInfo, getInitialCards, submitDeletedCard, submitLikedCard, unlikeCard, addCard, editProfile, changeAvatar }
