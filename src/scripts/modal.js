@@ -1,7 +1,3 @@
-const popupImage = document.querySelector('.popup__image');
-const popupCaption = document.querySelector('.popup__caption');
-const popupCard = document.querySelector('.popup_type_image');
-
 function openModal(popupType) {
   popupType.classList.add('popup_is-opened');
   document.addEventListener('keydown', hangKeyListener)
@@ -26,12 +22,4 @@ function addClosePopupByOverlayEventListener(popup) {
   })
 };
 
-function handleImagePopupOpening(card) {
-  openModal(popupCard);
-
-  popupImage.src = card.link;
-  popupCaption.textContent = card.name;
-  popupImage.alt = card.name;
-};
-
-export { openModal, closeModal, addClosePopupByOverlayEventListener, handleImagePopupOpening, popupCard };
+export { openModal, closeModal, addClosePopupByOverlayEventListener };

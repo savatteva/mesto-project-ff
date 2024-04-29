@@ -1,6 +1,3 @@
-import { renderLoading } from './utils';
-import {  formEditProfile } from './index'
-
 const config = {
   baseUrl: 'https://nomoreparties.co/v1/wff-cohort-12',
   headers: {
@@ -31,9 +28,7 @@ const getInitialCards = async () => {
     .then(checkStatus)
 }
 
-const addCard = async (name, link, likes, form) => {
-  renderLoading(true, form.querySelector('.popup__button'));
-
+const addCard = async (name, link, likes) => {
   return fetch(`${config.baseUrl}/cards`, {
     method: 'POST',
     headers: config.headers, 
@@ -46,8 +41,7 @@ const addCard = async (name, link, likes, form) => {
     .then(checkStatus)
 }
 
-const submitDeletedCard = async (id, form) => {
-  renderLoading(true, form.querySelector('.popup__button'));
+const submitDeletedCard = async (id) => {
   return fetch(`${config.baseUrl}/cards/${id}`, {
     method: 'DELETE',
     headers: config.headers, 
@@ -71,9 +65,7 @@ const unlikeCard = async (id) => {
     .then(checkStatus)
 }
 
-const editProfile = async (name, about, form) => {
-  renderLoading(true, form.querySelector('.popup__button'));
-
+const editProfile = async (name, about) => {
   return fetch(`${config.baseUrl}/users/me`, {
     method: 'PATCH',
     headers: config.headers, 
@@ -85,9 +77,7 @@ const editProfile = async (name, about, form) => {
     .then(checkStatus)
 }
 
-const changeAvatar = async (avatar, form) => {
-  renderLoading(true, form.querySelector('.popup__button'))
-
+const changeAvatar = async (avatar) => {
   return fetch(`${config.baseUrl}/users/me/avatar`, {
     method: 'PATCH',
     headers: config.headers, 

@@ -1,6 +1,6 @@
 import '../pages/index.css';
 import { createCard, likeCard, deleteCard, cardContainer, popupDeleteCard } from './card.js';
-import { closeModal, openModal, addClosePopupByOverlayEventListener, handleImagePopupOpening, popupCard } from './modal.js';
+import { closeModal, openModal, addClosePopupByOverlayEventListener } from './modal.js';
 import { validationConfig, enableValidation, clearValidation } from './validation.js';
 import { getUserInfo, getInitialCards, addCard, editProfile, changeAvatar } from './api';
 import { setYear, renderLoading, resetForm } from './utils';
@@ -19,6 +19,9 @@ const nameInput = formEditProfile.elements.name;
 const descriptionInput = formEditProfile.elements.description;
 const changeAvatarForm = document.forms.newAvatar;
 const avatarUrlInput = changeAvatarForm.elements.avatar;
+const popupImage = document.querySelector('.popup__image');
+const popupCaption = document.querySelector('.popup__caption');
+const popupCard = document.querySelector('.popup_type_image');
 
 Promise.all([getInitialCards(), getUserInfo()])
   .then(([cards, userInfo]) => {
@@ -43,6 +46,8 @@ function fillProfilePopup() {
 
 function handleEditProfileFormSubmit(e) {
   e.preventDefault();
+
+  renderLoading(true, formEditProfile.querySelector('.popup__button'))
   
   const userInfo = {
     name: nameInput.value,
@@ -63,6 +68,8 @@ function handleEditProfileFormSubmit(e) {
 
 function handleNewPlaceFormSubmit(e) {
   e.preventDefault();
+
+  renderLoading(true, formNewPlace.querySelector('.popup__button'));
 
   const newPlace = {
     name: formNewPlace.elements.placeName.value,
@@ -85,6 +92,8 @@ function handleNewPlaceFormSubmit(e) {
 
 function handleChangeAvatarFormSubmit(e) {
   e.preventDefault();
+
+  renderLoading(true, changeAvatarForm.querySelector('.popup__button'));
 
   const newAvatar = avatarUrlInput.value;
 
@@ -133,6 +142,14 @@ editBtn.addEventListener('click', () => {
   fillProfilePopup();
   openModal(popupEditProfile);
 })
+
+function handleImagePopupOpening(card) {
+  openModal(popupCard);
+
+  popupImage.src = card.link;
+  popupCaption.textContent = card.name;
+  popupImage.alt = card.name;
+};
 
 hangEventListenerForm(formEditProfile, handleEditProfileFormSubmit);
 hangEventListenerForm(formNewPlace, handleNewPlaceFormSubmit);

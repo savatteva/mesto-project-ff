@@ -51,6 +51,7 @@ function deleteCardUsingModal(cardElement, deleteCard) {
 }
 
 function deleteCard(card, form) {
+  renderLoading(true, form.querySelector('.popup__button'));
   card.remove();
   submitDeletedCard(card.id, form)
     .then(closeModal(popupDeleteCard))
